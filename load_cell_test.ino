@@ -48,17 +48,20 @@ int calibrate = 1; // 0 = Output to Processing Application, 1 = Calibration mode
 int analogPin = 0;  // Arduino analog pin to read
 
 // LOAD CELL CALIBRATION
+// Measure test loads on good scales first, enter the values for loadLow &
+// loadHigh, put test loads on hacked scale & enter analogue values for analogLow & analogHigh.
+// loadLow can be default 0 (no test load), just enter analogue reading for analogLow.
 // Low end of the test load values
-static long loadLow = 0; // measured load in grammes on good scales
-static int analogLow = 80; // analog reading from load cell for low end test load
+static long loadLow = 0; // measured low end load in grammes from good scales
+static int analogLow = 64; // analog reading from load cell for low end test load
 
 // High end of the test load values
-static long loadHigh = 5103; // measured load in grammes on good scales
-static int analogHigh = 1008; // analog reading from load cell for high end test load
+static long loadHigh = 5000; // measured high end load in grammes from good scales
+static int analogHigh = 1022; // analog reading from load cell for high end test load
 
 // This is used when you change the load cell platform to something else that weighs
 // different and the load is no longer on zero. Add an offset to set to zero.
-int loadAdjustment = 164;  // Adjust non loaded load cell to 0
+int loadAdjustment = 0;  // Adjust non loaded load cell to 0
 
 
 
@@ -96,9 +99,9 @@ void loop() {
     int loadGrams = map(analogSamplesAverage, analogLow, analogHigh, loadLow, loadHigh);
     loadGrams = loadGrams - loadAdjustment;  // Shift the load to measure from 0 load
     if (calibrate) {// print test results
-      Serial.print("analog value: ");Serial.println(analogValue);
-      Serial.print("average value: ");Serial.println(analogSamplesAverage);
-      Serial.print("load in grams: ");Serial.println(loadGrams);
+      Serial.print("Analog pin value: ");Serial.println(analogValue);
+      Serial.print("Smoothed analog value: ");Serial.println(analogSamplesAverage);
+      Serial.print("Scale load (grammes): ");Serial.println(loadGrams);
       Serial.println(" ");
     } else {  // Output to Processing as such
       Serial.println(loadGrams);
